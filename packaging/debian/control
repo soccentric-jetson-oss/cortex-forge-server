@@ -1,0 +1,5 @@
+Source: $(name)
+Section: net
+Priority: optional
+Maintainer: Sandesh <sandesh@soccentric.com>
+Build-Depends: debhelper-compat (= 13), cmake, ninja-build, libgrpc++-dev, libprotobuf-dev
