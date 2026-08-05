@@ -1,0 +1,5 @@
+build/
+*.o *.ko *.so *.a
+.*.swp .DS_Store
+__pycache__/
+*.pyc
