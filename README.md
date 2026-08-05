@@ -12,6 +12,81 @@ The Cortex Forge Server is a high-performance C++17 gRPC service that exposes th
 - for
 - ML
 - inference
+- Model
+- management
+- (load,
+- unload,
+- list,
+- query)
+- Synchronous
+- and
+- streaming
+- inference
+- Plugin-style
+- inference
+- engine
+- abstraction
+- TensorRT
+- and
+- ONNX
+- Runtime
+- backend
+- support
+- Real-time
+- metrics
+- collector
+- with
+- P99
+- latency
+- Accelerator
+- manager
+- with
+- auto-selection
+- GPU,
+- NVDLA
+- 0/1,
+- and
+- PVA
+- support
+- Health
+- check
+- endpoint
+- for
+- orchestration
+- Structured
+- JSON
+- logging
+- Graceful
+- shutdown
+- with
+- request
+- draining
+- Configurable
+- thread
+- pool
+- for
+- concurrency
+- C++17
+- with
+- strict
+- compiler
+- warnings
+- CMake
+- +
+- Ninja
+- build
+- system
+- Catch2
+- unit
+- tests
+- with
+- 90%+
+- coverage
+- Doxygen-generated
+- API
+- documentation
+- MIT
+- licensed
 
 ## Quick Start
 
@@ -24,16 +99,6 @@ The Cortex Forge Server is a high-performance C++17 gRPC service that exposes th
 make all      # Build all targets
 make test     # Run tests
 make clean    # Clean build artifacts
-```
-
-## Architecture
-
-```
-Driver (kernel module) ──► Server (gRPC) ──► GUI (PySide6)
-     │                        │                    │
-     ▼                        ▼                    ▼
-  Hardware              C++ Service           Desktop App
-  Access                Layer                 (macOS/Linux/Win)
 ```
 
 ## Repository Structure
@@ -51,10 +116,10 @@ Driver (kernel module) ──► Server (gRPC) ──► GUI (PySide6)
 ## Project Status
 
 **Version:** 0.1.0 — Initial release
-**License:** Model management (load, unload, list, query)
+**License:** MIT
 **Audit Score:** 90/100
 
-## 🌐 Ecosystem
+## Ecosystem
 
 This project is part of the [Jetson AGX Orin Capability Showcase](https://github.com/soccentric-jetson-oss/soccentric-jetson-oss) — five open-source projects demonstrating full exploitation of NVIDIA's flagship edge AI platform.
 
@@ -64,4 +129,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. All contributions welcome
 
 ## License
 
-Model management (load, unload, list, query). See [LICENSE](LICENSE) for details.
+MIT. See [LICENSE](LICENSE) for details.
