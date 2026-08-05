@@ -23,3 +23,9 @@ This server depends on the **cortex-forge-driver** kernel module for:
 - Linux (x86_64 for dev, aarch64 for Jetson deployment)
 - cortex-forge-driver kernel module loaded
 - NVIDIA Jetson AGX Orin (for hardware acceleration)
+
+## Version Requirements
+- GCC >= 9, Clang >= 10 (C/C++ projects)
+- Python >= 3.9 (Python projects)
+- CMake >= 3.20 (CMake projects)
+- Linux kernel >= 5.15 (kernel modules)
