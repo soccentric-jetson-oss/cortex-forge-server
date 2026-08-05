@@ -79,3 +79,6 @@ This server communicates with the `cortex-forge-driver` kernel module via:
 ## License
 
 MIT
+
+## 🌐 Ecosystem Website
+Visit the [Jetson AGX Orin Capability Showcase](https://github.com/soccentric-jetson-oss/soccentric-jetson-oss) for an overview of all projects.
