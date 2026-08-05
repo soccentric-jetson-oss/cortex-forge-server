@@ -1,6 +1,6 @@
 # Audit Report — cortex-forge-server
 
-**Score: 82/100**
+**Score: 85/100**
 
 ## 20-Category Scoring
 
@@ -16,18 +16,18 @@
 | 2.3 Testing | 4/5 |
 | 2.4 Type Safety | 4/5 |
 | 2.5 Dependencies | 4/5 |
-| 3.1 Input Validation | 3/5 |
-| 3.2 Authentication | 3/5 |
+| 3.1 Input Validation | 4/5 |
+| 3.2 Authentication | 4/5 |
 | 3.3 Secure Defaults | 4/5 |
 | 4.1 Build System | 5/5 |
-| 4.2 CI/CD | 3/5 |
+| 4.2 CI/CD | 4/5 |
 | 4.3 Packaging | 4/5 |
 | 5.1 Documentation | 5/5 |
 | 5.2 Licensing | 5/5 |
 | 5.3 Versioning | 4/5 |
 | 5.4 Community | 4/5 |
 
-**Total: 82/100**
+**Total: 85/100**
 
 ## Verdict: ⚠️ NEEDS WORK
 
