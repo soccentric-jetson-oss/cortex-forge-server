@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Cortex Forge Contributors
+
+PROJECT_NAME = "Cortex Forge Server"
+PROJECT_NUMBER = 0.1.0
+
+DOXYFILE_ENCODING = UTF-8
+OUTPUT_DIRECTORY = /home/sandesh/jetson/build/cortex-forge-server/docs/html
+INPUT = /home/sandesh/jetson/build/cortex-forge-server/src /home/sandesh/jetson/build/cortex-forge-server/docs/mainpage.md
+FILE_PATTERNS = *.hpp *.cpp *.md
+RECURSIVE = YES
+EXTRACT_ALL = YES
+EXTRACT_PRIVATE = NO
+EXTRACT_STATIC = NO
+GENERATE_HTML = YES
+GENERATE_LATEX = NO
+HTML_DYNAMIC_SECTIONS = YES

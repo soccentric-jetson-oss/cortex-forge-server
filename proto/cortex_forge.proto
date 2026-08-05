@@ -1,0 +1,150 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Cortex Forge Contributors
+
+syntax = "proto3";
+
+package cortexforge;
+
+option cc_generic_services = false;
+
+// ── Cortex Forge gRPC Service ─────────────────────────────────────────────
+// Exposes model loading, inference, and accelerator monitoring for the
+// NVIDIA Jetson AGX Orin ML accelerators (NVDLA, PVA, GPU).
+
+service CortexForge {
+    // Model management
+    rpc LoadModel(LoadModelRequest) returns (LoadModelResponse);
+    rpc UnloadModel(UnloadModelRequest) returns (UnloadModelResponse);
+    rpc ListModels(ListModelsRequest) returns (ListModelsResponse);
+    rpc GetModelInfo(GetModelInfoRequest) returns (GetModelInfoResponse);
+
+    // Inference
+    rpc Infer(InferRequest) returns (InferResponse);
+    rpc InferStream(InferRequest) returns (stream InferResponse);
+
+    // Monitoring
+    rpc GetMetrics(GetMetricsRequest) returns (GetMetricsResponse);
+    rpc WatchMetrics(GetMetricsRequest) returns (stream MetricsSnapshot);
+
+    // Health
+    rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+// ── Model Management ───────────────────────────────────────────────────────
+
+message LoadModelRequest {
+    string model_path = 1;       // Path to model file (engine plan, ONNX, etc.)
+    string model_name = 2;       // Optional: friendly name (auto-generated if empty)
+    string framework = 3;        // "tensorrt", "onnx", "custom"
+    uint32 batch_size = 4;       // Max batch size (0 = default)
+    string accelerator = 5;      // "gpu", "dla0", "dla1", "pva", "auto"
+}
+
+message LoadModelResponse {
+    string model_id = 1;         // Unique model identifier
+    string model_name = 2;       // Assigned model name
+    bool success = 3;
+    string error_message = 4;
+}
+
+message UnloadModelRequest {
+    string model_id = 1;
+}
+
+message UnloadModelResponse {
+    bool success = 1;
+    string error_message = 2;
+}
+
+message ListModelsRequest {
+    // Empty
+}
+
+message ModelInfo {
+    string model_id = 1;
+    string model_name = 2;
+    string framework = 3;
+    uint32 batch_size = 4;
+    string accelerator = 5;
+    uint64 load_time_us = 6;
+    uint64 total_inferences = 7;
+    double avg_latency_us = 8;
+    bool loaded = 9;
+}
+
+message ListModelsResponse {
+    repeated ModelInfo models = 1;
+}
+
+message GetModelInfoRequest {
+    string model_id = 1;
+}
+
+message GetModelInfoResponse {
+    ModelInfo model = 1;
+    bool found = 2;
+}
+
+// ── Inference ──────────────────────────────────────────────────────────────
+
+message InferRequest {
+    string model_id = 1;
+    bytes input_data = 2;        // Serialized input tensor(s)
+    map<string, string> params = 3;  // Optional inference parameters
+}
+
+message InferResponse {
+    string model_id = 1;
+    bytes output_data = 2;       // Serialized output tensor(s)
+    uint64 latency_us = 3;       // Inference latency in microseconds
+    bool success = 4;
+    string error_message = 5;
+}
+
+// ── Monitoring ─────────────────────────────────────────────────────────────
+
+message GetMetricsRequest {
+    // Empty (returns all metrics)
+}
+
+message MetricsSnapshot {
+    // Accelerator metrics
+    double gpu_util_percent = 1;
+    double dla0_util_percent = 2;
+    double dla1_util_percent = 3;
+    double pva_util_percent = 4;
+
+    // Memory
+    uint64 gpu_mem_total_mb = 5;
+    uint64 gpu_mem_used_mb = 6;
+
+    // Inference statistics
+    uint64 total_inferences = 7;
+    double avg_latency_us = 8;
+    double p99_latency_us = 9;
+    uint64 inferences_per_second = 10;
+
+    // Timestamp
+    uint64 timestamp_us = 11;
+}
+
+message GetMetricsResponse {
+    MetricsSnapshot current = 1;
+}
+
+// ── Health ─────────────────────────────────────────────────────────────────
+
+message HealthCheckRequest {
+    string service = 1;          // Optional: specific service to check
+}
+
+message HealthCheckResponse {
+    enum ServingStatus {
+        UNKNOWN = 0;
+        SERVING = 1;
+        NOT_SERVING = 2;
+    }
+    ServingStatus status = 1;
+    string version = 2;
+    uint64 uptime_us = 3;
+}
