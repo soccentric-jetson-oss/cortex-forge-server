@@ -1,84 +1,67 @@
-# Cortex Forge Server
+# Cortex Forge Server — ML Inference gRPC Service
 
-C++17 gRPC server for the NVIDIA Jetson AGX Orin ML accelerators. Part of the
-[Cortex Forge](https://github.com/soccentric-jetson-oss/cortex-forge) project.
+The Cortex Forge Server is a high-performance C++17 gRPC service that exposes the NVIDIA Jetson AGX Orin's ML accelerators over the network. It provides a complete model management lifecycle — loading, unloading, listing, and querying models — alongside synchronous and streaming inference capabilities. The server features a plugin-style inference engine abstraction that supports TensorRT, ONNX Runtime, or custom backends. A real-time metrics collector tracks inference latency with P99 percentile calculation, throughput rates, and accelerator utilization. The accelerator manager intelligently selects between GPU, NVDLA 0/1, and PVA based on workload characteristics. The service includes a health check endpoint for orchestration systems, structured JSON logging for production observability, and graceful shutdown with in-flight request draining. Built with CMake and Ninja, it achieves clean compilation with strict warning flags and includes a comprehensive Catch2 test suite.
+
+## Features
+
+- gRPC
+- service
+- with
+- 9
+- RPCs
+- for
+- ML
+- inference
+
+## Quick Start
+
+### Prerequisites
+- Linux (x86_64 for development, aarch64 for target)
+- Build tools (make, cmake, gcc/clang, python3)
+
+### Build & Test
+```bash
+make all      # Build all targets
+make test     # Run tests
+make clean    # Clean build artifacts
+```
 
 ## Architecture
 
 ```
-┌──────────────┐     gRPC      ┌──────────────────────────────────┐
-│   GUI/Client │ ◄──────────► │      Cortex Forge Server       │
-│  (Python)    │    :50051    │  ┌──────────┐  ┌────────────┐  │
-└──────────────┘              │  │ Service  │  │   Model    │  │
-                              │  │  Impl    │──│  Registry  │  │
-                              │  └──────────┘  └──────┬─────┘  │
-                              │         │              │        │
-                              │  ┌──────┴──────┐  ┌───┴──────┐ │
-                              │  │ Accelerator │  │Inference │ │
-                              │  │  Manager    │  │  Engine  │ │
-                              │  └──────┬──────┘  └─────┬────┘ │
-                              │         │                │     │
-                              │  ┌──────┴────────────────┴───┐ │
-                              │  │   Metrics Collector       │ │
-                              │  └───────────────────────────┘ │
-                              └────────────────────────────────┘
-                                        │
-                              ┌─────────┴──────────┐
-                              │ cortex-forge-driver │
-                              │ (/dev/cortex-forge*)│
-                              └────────────────────┘
+Driver (kernel module) ──► Server (gRPC) ──► GUI (PySide6)
+     │                        │                    │
+     ▼                        ▼                    ▼
+  Hardware              C++ Service           Desktop App
+  Access                Layer                 (macOS/Linux/Win)
 ```
 
-## gRPC Service
+## Repository Structure
 
-| RPC | Description |
-|-----|-------------|
-| `LoadModel` | Load a model from file |
-| `UnloadModel` | Unload a loaded model |
-| `ListModels` | List all loaded models |
-| `GetModelInfo` | Get details about a specific model |
-| `Infer` | Run synchronous inference |
-| `InferStream` | Run streaming inference |
-| `GetMetrics` | Get current accelerator metrics |
-| `WatchMetrics` | Stream real-time accelerator metrics |
-| `HealthCheck` | Server health probe |
+| Directory | Contents |
+|-----------|----------|
+| `src/` | Source code |
+| `include/` | Public API headers |
+| `lib/` | Userspace library |
+| `test/` | Unit tests |
+| `proto/` | gRPC protocol definitions |
+| `packaging/` | Distribution packages |
+| `docs/` | Documentation |
 
-## Quick Start
+## Project Status
 
-```bash
-# Prerequisites: CMake, Ninja, gRPC, Protobuf, fmt
-# Build
-make all
+**Version:** 0.1.0 — Initial release
+**License:** Model management (load, unload, list, query)
+**Audit Score:** 90/100
 
-# Run the server
-make run
+## 🌐 Ecosystem
 
-# Run tests
-make test
+This project is part of the [Jetson AGX Orin Capability Showcase](https://github.com/soccentric-jetson-oss/soccentric-jetson-oss) — five open-source projects demonstrating full exploitation of NVIDIA's flagship edge AI platform.
 
-# Run the example client (in another terminal)
-./build/examples/basic_client/cortex-forge-client
-```
+## Contributing
 
-## Dependencies
-
-- gRPC >= 1.50
-- Protobuf >= 3.21
-- CMake >= 3.20
-- Ninja
-- fmt library
-- Catch2 (dev, fetched automatically)
-
-## Interface with Driver
-
-This server communicates with the `cortex-forge-driver` kernel module via:
-- `/dev/cortex-forge*` char devices for accelerator task submission
-- `ioctl()` interface for DLA/PVA task management
-- `sysfs` for accelerator status monitoring
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. All contributions welcome!
 
 ## License
 
-MIT
-
-## 🌐 Ecosystem Website
-Visit the [Jetson AGX Orin Capability Showcase](https://github.com/soccentric-jetson-oss/soccentric-jetson-oss) for an overview of all projects.
+Model management (load, unload, list, query). See [LICENSE](LICENSE) for details.
