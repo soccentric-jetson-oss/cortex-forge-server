@@ -97,3 +97,22 @@ private:
 };
 
 } // namespace cortexforge
+
+/* OpenCV integration for embedded optimization */
+#ifdef HAS_OPENCV
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
+
+class OpenCVOptimizedEngine : public InferenceEngine {
+public:
+    bool LoadModel(const std::string& path) override;
+    void UnloadModel() override;
+    InferenceResult Infer(const std::vector<uint8_t>& data) override;
+    size_t GetInputSize() const override;
+    size_t GetOutputSize() const override;
+    bool IsLoaded() const override;
+private:
+    cv::Mat preprocess(const cv::Mat& input);
+    bool loaded_{false};
+};
+#endif
