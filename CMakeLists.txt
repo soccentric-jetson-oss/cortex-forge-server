@@ -155,6 +155,50 @@ if(ENABLE_DOXYGEN)
     endif()
 endif()
 
+# ── Formatting & Linting ────────────────────────────────────────────────
+find_program(CLANG_FORMAT clang-format)
+if(CLANG_FORMAT)
+    file(GLOB_RECURSE FORMAT_SOURCES
+        src/*.cpp src/*.hpp src/*.h test/*.cpp test/*.hpp
+    )
+    add_custom_target(format
+        COMMAND ${CLANG_FORMAT} -i ${FORMAT_SOURCES}
+        COMMENT "Formatting sources with clang-format"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+    add_custom_target(format-check
+        COMMAND ${CLANG_FORMAT} --dry-run --Werror ${FORMAT_SOURCES}
+        COMMENT "Checking formatting with clang-format"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+endif()
+
+find_program(CPPCHECK cppcheck)
+if(CPPCHECK)
+    file(GLOB_RECURSE LINT_SOURCES src/*.cpp src/*.hpp test/*.cpp)
+    add_custom_target(lint
+        COMMAND ${CPPCHECK} --enable=all --inconclusive --suppress=missingIncludeSystem
+            ${LINT_SOURCES}
+        COMMENT "Running cppcheck static analysis"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+endif()
+
+# ── Documentation (Doxygen) ────────────────────────────────────────────────
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile ${CMAKE_CURRENT_BINARY_DIR}/docs/Doxyfile @ONLY)
+    add_custom_target(doc
+        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/docs/Doxyfile
+        COMMENT "Generating Doxygen documentation"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+    add_custom_target(doc-open
+        COMMAND xdg-open ${CMAKE_CURRENT_BINARY_DIR}/docs/html/index.html 2>/dev/null || true
+        COMMENT "Opening Doxygen documentation"
+    )
+endif()
+
 # ── Install ────────────────────────────────────────────────────────────────
 install(TARGETS cortex-forge-server
         RUNTIME DESTINATION bin)

@@ -1,17 +1,59 @@
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2026 Cortex Forge Contributors
+#
+# Doxyfile.in for cortex-forge-server
+# Copyright (c) 2026 SoC Centric LLC
+# Author: Sandesh Ghimire
+#
+# CMake-configured template. @VAR@ substitutions are expanded by CMake.
+# Full DOT integration: call graphs, caller graphs, collaboration,
+# include graphs, directory graphs, and UML-style class diagrams.
 
-PROJECT_NAME = "Cortex Forge Server"
-PROJECT_NUMBER = 0.1.0
+PROJECT_NAME           = "Cortex Forge Server"
+PROJECT_NUMBER         = 0.1.0
+PROJECT_BRIEF          = "gRPC server for ML inference on Jetson AGX Orin accelerators"
+OUTPUT_DIRECTORY       = @CMAKE_CURRENT_BINARY_DIR@/docs/html
+CREATE_SUBDIRS         = YES
+INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@/src @CMAKE_CURRENT_SOURCE_DIR@/proto
+INPUT_ENCODING         = UTF-8
+FILE_PATTERNS          = *.cpp *.hpp *.proto
+RECURSIVE              = YES
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+GENERATE_TREEVIEW      = YES
+TREEVIEW_WIDTH         = 250
+HTML_DYNAMIC_SECTIONS  = YES
+SORT_MEMBER_DOCS       = YES
+SORT_BRIEF_DOCS        = YES
 
-DOXYFILE_ENCODING = UTF-8
-OUTPUT_DIRECTORY = @CMAKE_CURRENT_SOURCE_DIR@/docs/html
-INPUT = @CMAKE_CURRENT_SOURCE_DIR@/src @CMAKE_CURRENT_SOURCE_DIR@/docs/mainpage.md
-FILE_PATTERNS = *.hpp *.cpp *.md
-RECURSIVE = YES
-EXTRACT_ALL = YES
-EXTRACT_PRIVATE = NO
-EXTRACT_STATIC = NO
-GENERATE_HTML = YES
-GENERATE_LATEX = NO
-HTML_DYNAMIC_SECTIONS = YES
+# ── DOT integration ──────────────────────────────────────────────────────
+HAVE_DOT               = YES
+DOT_NUM_THREADS        = 4
+DOT_FONTNAME           = Helvetica
+DOT_FONTSIZE           = 10
+DOT_GRAPH_MAX_DEPTH    = 3
+DOT_IMAGE_FORMAT       = svg
+DOT_CLEANUP            = YES
+CALL_GRAPH             = YES
+CALLER_GRAPH           = YES
+COLLABORATION_GRAPH    = YES
+GROUP_GRAPHS           = YES
+UML_LOOK               = YES
+UML_LIMIT_NUM_FIELDS   = 10
+TEMPLATE_RELATIONS     = YES
+INCLUDE_GRAPH          = YES
+INCLUDED_BY_GRAPH      = YES
+DIRECTORY_GRAPH        = YES
+CLASS_DIAGRAMS         = YES
+CLASS_GRAPH            = YES
+DOT_TRANSPARENT        = YES
+DOT_MULTI_TARGETS      = YES
+MAX_DOT_GRAPH_DEPTH    = 3
+DOT_WRAP_THRESHOLD     = 5
+
+# ── Warnings ────────────────────────────────────────────────────────────
+WARN_NO_PARAMDOC       = YES
+WARN_AS_ERROR          = YES
+WARN_FORMAT            = "$file:$line: $text"

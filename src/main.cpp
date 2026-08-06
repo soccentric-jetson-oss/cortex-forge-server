@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026 Cortex Forge Contributors
+// Copyright (c) 2026 SoC Centric LLC
 //
 // main.cpp - Entry point for the Cortex Forge gRPC server
 //
@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
     std::signal(SIGINT, signal_handler);
     std::signal(SIGTERM, signal_handler);
 
-    std::string server_address = "0.0.0.0:50051";
+    std::string server_address = "127.0.0.1:50051";
 
     // Parse command-line args
     for (int i = 1; i < argc; ++i) {

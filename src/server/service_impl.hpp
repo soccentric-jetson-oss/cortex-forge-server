@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026 Cortex Forge Contributors
+// Copyright (c) 2026 SoC Centric LLC
 //
 // service_impl.hpp - gRPC service implementation for Cortex Forge
 //

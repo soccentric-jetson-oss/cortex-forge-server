@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026 Cortex Forge Contributors
+// Copyright (c) 2026 SoC Centric LLC
 //
 // server.hpp - gRPC server wrapper for Cortex Forge
 //
@@ -18,7 +18,7 @@ namespace cortexforge {
 class Server {
 public:
     /// @brief Construct a server bound to the given address.
-    /// @param address Host:port string (e.g., "0.0.0.0:50051").
+    /// @param address Host:port string (e.g., "127.0.0.1:50051").
     explicit Server(const std::string& address);
 
     /// @brief Start the gRPC server. Blocks until the server is ready.

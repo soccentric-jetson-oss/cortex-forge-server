@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2026 Cortex Forge Contributors
+// Copyright (c) 2026 SoC Centric LLC
 //
 // metrics_collector.cpp - Metrics collector implementation
 
