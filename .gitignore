@@ -1,6 +1,21 @@
 # SPDX-License-Identifier: MIT
-build/ dist/ *.o *.a *.so *.so.*
-*.swp *.swo *~ .vscode/ .idea/
-__pycache__/ *.pyc *.pyo *.egg-info/ .venv/
+build/
+dist/
+*.o
+*.a
+*.so
+*.so.*
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
 docs/html/
-.DS_Store Thumbs.db *.bak
+.DS_Store
+Thumbs.db
+*.bak
