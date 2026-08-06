@@ -15,6 +15,8 @@
 namespace cortexforge
 {
 
+class CortexForgeServiceImpl;
+
 /// @brief Wraps a gRPC server with Cortex Forge service implementation.
 class Server
 {
@@ -36,6 +38,7 @@ class Server
 
   private:
     std::string address_;
+    std::shared_ptr<CortexForgeServiceImpl> service_;
     std::unique_ptr<grpc::Server> server_;
     std::unique_ptr<grpc::ServerCompletionQueue> cq_;
     bool running_{false};

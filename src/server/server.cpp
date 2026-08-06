@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 SoC Centric LLC
 //
-// server.cpp - gRPC server implementation
+// server.cpp - gRPC server implementation with full service lifecycle
 //
-/// @brief Implements the gRPC server lifecycle.
+/// @brief Manages the gRPC server lifecycle with proper service ownership.
 
 #include "server/server.hpp"
 #include "server/service_impl.hpp"
@@ -12,17 +12,21 @@
 namespace cortexforge
 {
 
-Server::Server(const std::string& address) : address_(address)
+Server::Server(const std::string& address)
+    : address_(address)
+    , service_(std::make_shared<CortexForgeServiceImpl>())
 {
 }
 
 grpc::Status Server::Start()
 {
-    auto service = std::make_shared<CortexForgeServiceImpl>();
-
     grpc::ServerBuilder builder;
     builder.AddListeningPort(address_, grpc::InsecureServerCredentials());
-    builder.RegisterService(service.get());
+    builder.RegisterService(service_.get());
+
+    // Set max message size for large model/inference data
+    builder.SetMaxReceiveMessageSize(100 * 1024 * 1024);  // 100 MB
+    builder.SetMaxSendMessageSize(100 * 1024 * 1024);     // 100 MB
 
     cq_ = builder.AddCompletionQueue();
     server_ = builder.BuildAndStart();
@@ -33,7 +37,9 @@ grpc::Status Server::Start()
     }
 
     running_ = true;
-    std::cout << "gRPC server listening on " << address_ << "\n";
+    std::cout << "Cortex Forge Server v0.1.0 listening on " << address_ << "\n";
+    std::cout << "  Accelerators: GPU, DLA0, DLA1, PVA\n";
+    std::cout << "  Capabilities: tensorrt, cuda, dla, pva, hot-swap, fault-recovery\n";
     return grpc::Status::OK;
 }
 
@@ -45,7 +51,7 @@ void Server::Shutdown()
     running_ = false;
     server_->Shutdown();
     cq_->Shutdown();
-    std::cout << "Server shut down gracefully.\n";
+    std::cout << "Cortex Forge Server shut down gracefully.\n";
 }
 
 bool Server::IsRunning() const
