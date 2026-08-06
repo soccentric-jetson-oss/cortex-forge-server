@@ -69,3 +69,11 @@ MIT. See [LICENSE](LICENSE) for details.
 ## Showcase
 
 This project is part of the [Jetson AGX Orin Capability Showcase](https://soccentric-jetson-oss.github.io/).
+
+---
+
+## Author
+
+**Sandesh Ghimire** — [sandesh@soccentric.com](mailto:sandesh@soccentric.com)
+
+Copyright (c) 2026 SoC Centric LLC. All rights reserved.
