@@ -9,12 +9,15 @@
 #include "server/service_impl.hpp"
 #include <iostream>
 
-namespace cortexforge {
+namespace cortexforge
+{
 
-Server::Server(const std::string& address)
-    : address_(address) {}
+Server::Server(const std::string& address) : address_(address)
+{
+}
 
-grpc::Status Server::Start() {
+grpc::Status Server::Start()
+{
     auto service = std::make_shared<CortexForgeServiceImpl>();
 
     grpc::ServerBuilder builder;
@@ -24,9 +27,9 @@ grpc::Status Server::Start() {
     cq_ = builder.AddCompletionQueue();
     server_ = builder.BuildAndStart();
 
-    if (!server_) {
-        return grpc::Status(grpc::StatusCode::INTERNAL,
-                           "Failed to build and start gRPC server");
+    if (!server_)
+    {
+        return grpc::Status(grpc::StatusCode::INTERNAL, "Failed to build and start gRPC server");
     }
 
     running_ = true;
@@ -34,8 +37,10 @@ grpc::Status Server::Start() {
     return grpc::Status::OK;
 }
 
-void Server::Shutdown() {
-    if (!running_) return;
+void Server::Shutdown()
+{
+    if (!running_)
+        return;
 
     running_ = false;
     server_->Shutdown();
@@ -43,7 +48,8 @@ void Server::Shutdown() {
     std::cout << "Server shut down gracefully.\n";
 }
 
-bool Server::IsRunning() const {
+bool Server::IsRunning() const
+{
     return running_;
 }
 

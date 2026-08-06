@@ -11,15 +11,17 @@
 #include <memory>
 #include <random>
 
-namespace cortexforge {
+namespace cortexforge
+{
 
 /// @brief Manages accelerator selection and metrics collection.
 ///
 /// In production, this reads metrics from the cortex-forge-driver
 /// via /dev/cortex-forge* ioctls and sysfs. In development, it
 /// simulates accelerator metrics.
-class AcceleratorManager {
-public:
+class AcceleratorManager
+{
+  public:
     AcceleratorManager();
 
     /// @brief Get current accelerator utilization metrics.
@@ -33,7 +35,7 @@ public:
     /// @brief Check if a specific accelerator is available.
     bool IsAcceleratorAvailable(AcceleratorType type) const;
 
-private:
+  private:
     mutable std::mt19937 rng_;
 };
 

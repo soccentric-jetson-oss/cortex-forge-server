@@ -3,12 +3,13 @@
 //
 // test_server.cpp - Tests for the gRPC server
 
-#include <catch2/catch_test_macros.hpp>
 #include "server/service_impl.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 using namespace cortexforge;
 
-TEST_CASE("HealthCheck returns SERVING", "[server]") {
+TEST_CASE("HealthCheck returns SERVING", "[server]")
+{
     CortexForgeServiceImpl service;
     grpc::ServerContext ctx;
     HealthCheckRequest req;
@@ -21,7 +22,8 @@ TEST_CASE("HealthCheck returns SERVING", "[server]") {
     REQUIRE(resp.uptime_us() > 0);
 }
 
-TEST_CASE("LoadModel creates a model entry", "[server]") {
+TEST_CASE("LoadModel creates a model entry", "[server]")
+{
     CortexForgeServiceImpl service;
     grpc::ServerContext ctx;
     LoadModelRequest req;
@@ -38,7 +40,8 @@ TEST_CASE("LoadModel creates a model entry", "[server]") {
     REQUIRE(resp.model_name() == "resnet50");
 }
 
-TEST_CASE("ListModels returns loaded models", "[server]") {
+TEST_CASE("ListModels returns loaded models", "[server]")
+{
     CortexForgeServiceImpl service;
     grpc::ServerContext ctx;
 
@@ -56,7 +59,8 @@ TEST_CASE("ListModels returns loaded models", "[server]") {
     REQUIRE(list_resp.models_size() > 0);
 }
 
-TEST_CASE("UnloadModel removes a model", "[server]") {
+TEST_CASE("UnloadModel removes a model", "[server]")
+{
     CortexForgeServiceImpl service;
     grpc::ServerContext ctx;
 
@@ -76,7 +80,8 @@ TEST_CASE("UnloadModel removes a model", "[server]") {
     REQUIRE(unload_resp.success());
 }
 
-TEST_CASE("Infer returns results for loaded model", "[server]") {
+TEST_CASE("Infer returns results for loaded model", "[server]")
+{
     CortexForgeServiceImpl service;
     grpc::ServerContext ctx;
 
@@ -98,7 +103,8 @@ TEST_CASE("Infer returns results for loaded model", "[server]") {
     REQUIRE(infer_resp.latency_us() > 0);
 }
 
-TEST_CASE("Infer on unknown model returns NOT_FOUND", "[server]") {
+TEST_CASE("Infer on unknown model returns NOT_FOUND", "[server]")
+{
     CortexForgeServiceImpl service;
     grpc::ServerContext ctx;
 
@@ -111,7 +117,8 @@ TEST_CASE("Infer on unknown model returns NOT_FOUND", "[server]") {
     REQUIRE_FALSE(infer_resp.success());
 }
 
-TEST_CASE("GetMetrics returns valid data", "[server]") {
+TEST_CASE("GetMetrics returns valid data", "[server]")
+{
     CortexForgeServiceImpl service;
     grpc::ServerContext ctx;
 

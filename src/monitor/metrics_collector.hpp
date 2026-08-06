@@ -7,19 +7,21 @@
 
 #pragma once
 
+#include <chrono>
 #include <cstdint>
 #include <mutex>
 #include <vector>
-#include <chrono>
 
-namespace cortexforge {
+namespace cortexforge
+{
 
 /// @brief Collects and aggregates inference latency and throughput metrics.
 ///
 /// Maintains a sliding window of latency samples for percentile calculations.
 /// Thread-safe for concurrent access from multiple inference threads.
-class MetricsCollector {
-public:
+class MetricsCollector
+{
+  public:
     MetricsCollector();
 
     /// @brief Record an inference completion.
@@ -41,7 +43,7 @@ public:
     /// @brief Reset all metrics.
     void Reset();
 
-private:
+  private:
     mutable std::mutex mutex_;
     uint64_t total_inferences_{0};
     double sum_latency_us_{0.0};

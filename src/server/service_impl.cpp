@@ -7,40 +7,41 @@
 
 #include "server/service_impl.hpp"
 #include <chrono>
-#include <thread>
 #include <random>
+#include <thread>
 
-namespace cortexforge {
+namespace cortexforge
+{
 
-CortexForgeServiceImpl::CortexForgeServiceImpl()
-    : start_time_us_(NowUs()) {}
+CortexForgeServiceImpl::CortexForgeServiceImpl() : start_time_us_(NowUs())
+{
+}
 
-std::string CortexForgeServiceImpl::GenerateModelId() {
+std::string CortexForgeServiceImpl::GenerateModelId()
+{
     return "model-" + std::to_string(next_model_id_++);
 }
 
-uint64_t CortexForgeServiceImpl::NowUs() const {
-    return static_cast<uint64_t>(
-        std::chrono::duration_cast<std::chrono::microseconds>(
-            std::chrono::steady_clock::now().time_since_epoch()
-        ).count());
+uint64_t CortexForgeServiceImpl::NowUs() const
+{
+    return static_cast<uint64_t>(std::chrono::duration_cast<std::chrono::microseconds>(
+                                     std::chrono::steady_clock::now().time_since_epoch())
+                                     .count());
 }
 
 // ── Model Management ───────────────────────────────────────────────────────
 
-grpc::Status CortexForgeServiceImpl::LoadModel(
-    grpc::ServerContext* /*context*/,
-    const LoadModelRequest* request,
-    LoadModelResponse* response) {
+grpc::Status CortexForgeServiceImpl::LoadModel(grpc::ServerContext* /*context*/,
+                                               const LoadModelRequest* request,
+                                               LoadModelResponse* response)
+{
 
     auto load_start = NowUs();
 
     std::lock_guard<std::mutex> lock(mutex_);
 
     auto model_id = GenerateModelId();
-    auto model_name = request->model_name().empty()
-        ? "model-" + model_id
-        : request->model_name();
+    auto model_name = request->model_name().empty() ? "model-" + model_id : request->model_name();
 
     ModelInfo info;
     info.set_model_id(model_id);
@@ -62,15 +63,16 @@ grpc::Status CortexForgeServiceImpl::LoadModel(
     return grpc::Status::OK;
 }
 
-grpc::Status CortexForgeServiceImpl::UnloadModel(
-    grpc::ServerContext* /*context*/,
-    const UnloadModelRequest* request,
-    UnloadModelResponse* response) {
+grpc::Status CortexForgeServiceImpl::UnloadModel(grpc::ServerContext* /*context*/,
+                                                 const UnloadModelRequest* request,
+                                                 UnloadModelResponse* response)
+{
 
     std::lock_guard<std::mutex> lock(mutex_);
 
     auto it = models_.find(request->model_id());
-    if (it == models_.end()) {
+    if (it == models_.end())
+    {
         response->set_success(false);
         response->set_error_message("Model not found: " + request->model_id());
         return grpc::Status(grpc::StatusCode::NOT_FOUND, "Model not found");
@@ -81,14 +83,15 @@ grpc::Status CortexForgeServiceImpl::UnloadModel(
     return grpc::Status::OK;
 }
 
-grpc::Status CortexForgeServiceImpl::ListModels(
-    grpc::ServerContext* /*context*/,
-    const ListModelsRequest* /*request*/,
-    ListModelsResponse* response) {
+grpc::Status CortexForgeServiceImpl::ListModels(grpc::ServerContext* /*context*/,
+                                                const ListModelsRequest* /*request*/,
+                                                ListModelsResponse* response)
+{
 
     std::lock_guard<std::mutex> lock(mutex_);
 
-    for (const auto& [id, info] : models_) {
+    for (const auto& [id, info] : models_)
+    {
         auto* model = response->add_models();
         *model = info;
     }
@@ -96,15 +99,16 @@ grpc::Status CortexForgeServiceImpl::ListModels(
     return grpc::Status::OK;
 }
 
-grpc::Status CortexForgeServiceImpl::GetModelInfo(
-    grpc::ServerContext* /*context*/,
-    const GetModelInfoRequest* request,
-    GetModelInfoResponse* response) {
+grpc::Status CortexForgeServiceImpl::GetModelInfo(grpc::ServerContext* /*context*/,
+                                                  const GetModelInfoRequest* request,
+                                                  GetModelInfoResponse* response)
+{
 
     std::lock_guard<std::mutex> lock(mutex_);
 
     auto it = models_.find(request->model_id());
-    if (it == models_.end()) {
+    if (it == models_.end())
+    {
         response->set_found(false);
         return grpc::Status::OK;
     }
@@ -116,15 +120,15 @@ grpc::Status CortexForgeServiceImpl::GetModelInfo(
 
 // ── Inference ──────────────────────────────────────────────────────────────
 
-grpc::Status CortexForgeServiceImpl::Infer(
-    grpc::ServerContext* /*context*/,
-    const InferRequest* request,
-    InferResponse* response) {
+grpc::Status CortexForgeServiceImpl::Infer(grpc::ServerContext* /*context*/,
+                                           const InferRequest* request, InferResponse* response)
+{
 
     std::lock_guard<std::mutex> lock(mutex_);
 
     auto it = models_.find(request->model_id());
-    if (it == models_.end()) {
+    if (it == models_.end())
+    {
         response->set_success(false);
         response->set_error_message("Model not found: " + request->model_id());
         return grpc::Status(grpc::StatusCode::NOT_FOUND, "Model not found");
@@ -136,9 +140,9 @@ grpc::Status CortexForgeServiceImpl::Infer(
 
     model.set_total_inferences(model.total_inferences() + 1);
     model.set_avg_latency_us(
-        (model.avg_latency_us() * static_cast<double>(model.total_inferences() - 1ULL) + static_cast<double>(latency))
-        / static_cast<double>(model.total_inferences())
-    );
+        (model.avg_latency_us() * static_cast<double>(model.total_inferences() - 1ULL) +
+         static_cast<double>(latency)) /
+        static_cast<double>(model.total_inferences()));
 
     total_inferences_++;
 
@@ -150,14 +154,16 @@ grpc::Status CortexForgeServiceImpl::Infer(
     return grpc::Status::OK;
 }
 
-grpc::Status CortexForgeServiceImpl::InferStream(
-    grpc::ServerContext* context,
-    const InferRequest* request,
-    grpc::ServerWriter<InferResponse>* writer) {
+grpc::Status CortexForgeServiceImpl::InferStream(grpc::ServerContext* context,
+                                                 const InferRequest* request,
+                                                 grpc::ServerWriter<InferResponse>* writer)
+{
 
     // Stream 10 simulated inference results
-    for (int i = 0; i < 10; ++i) {
-        if (context->IsCancelled()) break;
+    for (int i = 0; i < 10; ++i)
+    {
+        if (context->IsCancelled())
+            break;
 
         InferResponse response;
         response.set_model_id(request->model_id());
@@ -165,7 +171,8 @@ grpc::Status CortexForgeServiceImpl::InferStream(
         response.set_latency_us(500 + static_cast<uint64_t>(rand() % 200));
         response.set_success(true);
 
-        if (!writer->Write(response)) break;
+        if (!writer->Write(response))
+            break;
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 
@@ -174,10 +181,10 @@ grpc::Status CortexForgeServiceImpl::InferStream(
 
 // ── Monitoring ────────────────────────────────────────────────────────────
 
-grpc::Status CortexForgeServiceImpl::GetMetrics(
-    grpc::ServerContext* /*context*/,
-    const GetMetricsRequest* /*request*/,
-    GetMetricsResponse* response) {
+grpc::Status CortexForgeServiceImpl::GetMetrics(grpc::ServerContext* /*context*/,
+                                                const GetMetricsRequest* /*request*/,
+                                                GetMetricsResponse* response)
+{
 
     auto* current = response->mutable_current();
     current->set_gpu_util_percent(45.0 + static_cast<double>(rand() % 30));
@@ -195,13 +202,14 @@ grpc::Status CortexForgeServiceImpl::GetMetrics(
     return grpc::Status::OK;
 }
 
-grpc::Status CortexForgeServiceImpl::WatchMetrics(
-    grpc::ServerContext* context,
-    const GetMetricsRequest* /*request*/,
-    grpc::ServerWriter<MetricsSnapshot>* writer) {
+grpc::Status CortexForgeServiceImpl::WatchMetrics(grpc::ServerContext* context,
+                                                  const GetMetricsRequest* /*request*/,
+                                                  grpc::ServerWriter<MetricsSnapshot>* writer)
+{
 
     // Stream metrics every 500ms
-    while (!context->IsCancelled()) {
+    while (!context->IsCancelled())
+    {
         MetricsSnapshot snapshot;
         snapshot.set_gpu_util_percent(45.0 + static_cast<double>(rand() % 30));
         snapshot.set_dla0_util_percent(30.0 + static_cast<double>(rand() % 40));
@@ -215,7 +223,8 @@ grpc::Status CortexForgeServiceImpl::WatchMetrics(
         snapshot.set_inferences_per_second(100 + static_cast<uint64_t>(rand() % 200));
         snapshot.set_timestamp_us(NowUs());
 
-        if (!writer->Write(snapshot)) break;
+        if (!writer->Write(snapshot))
+            break;
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 
@@ -224,10 +233,10 @@ grpc::Status CortexForgeServiceImpl::WatchMetrics(
 
 // ── Health ─────────────────────────────────────────────────────────────────
 
-grpc::Status CortexForgeServiceImpl::HealthCheck(
-    grpc::ServerContext* /*context*/,
-    const HealthCheckRequest* /*request*/,
-    HealthCheckResponse* response) {
+grpc::Status CortexForgeServiceImpl::HealthCheck(grpc::ServerContext* /*context*/,
+                                                 const HealthCheckRequest* /*request*/,
+                                                 HealthCheckResponse* response)
+{
 
     response->set_status(HealthCheckResponse::SERVING);
     response->set_version("0.1.0");

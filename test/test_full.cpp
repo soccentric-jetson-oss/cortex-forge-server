@@ -1,11 +1,12 @@
-#include <catch2/catch_test_macros.hpp>
-#include <thread>
-#include <chrono>
 #include <atomic>
-#include <grpcpp/grpcpp.h>
+#include <catch2/catch_test_macros.hpp>
+#include <chrono>
 #include <cortex_forge.pb.h>
+#include <grpcpp/grpcpp.h>
+#include <thread>
 
-TEST_CASE("Server configuration is valid", "[server]") {
+TEST_CASE("Server configuration is valid", "[server]")
+{
     // Verify that the gRPC server builder accepts valid configuration
     cortexforge::CortexForge::Service service;
     grpc::ServerBuilder builder;
@@ -16,16 +17,19 @@ TEST_CASE("Server configuration is valid", "[server]") {
     server->Shutdown();
 }
 
-TEST_CASE("Concurrent requests handled", "[server]") {
+TEST_CASE("Concurrent requests handled", "[server]")
+{
     std::atomic<int> counter{0};
     std::vector<std::thread> threads;
     for (int i = 0; i < 10; i++)
         threads.emplace_back([&]() { counter++; });
-    for (auto& t : threads) t.join();
+    for (auto& t : threads)
+        t.join();
     REQUIRE(counter == 10);
 }
 
-TEST_CASE("Error responses are well-formed", "[server]") {
+TEST_CASE("Error responses are well-formed", "[server]")
+{
     // Verify that gRPC error responses contain proper status codes
     grpc::Status not_found(grpc::StatusCode::NOT_FOUND, "model not found");
     REQUIRE_FALSE(not_found.ok());

@@ -7,21 +7,23 @@
 
 #pragma once
 
-#include <string>
-#include <unordered_map>
+#include <cortex_forge.pb.h>
 #include <memory>
 #include <mutex>
-#include <cortex_forge.pb.h>
+#include <string>
+#include <unordered_map>
 
-namespace cortexforge {
+namespace cortexforge
+{
 
 class InferenceEngine;
 
 /// @brief Thread-safe registry of loaded models.
 ///
 /// Maps model IDs to ModelInfo protobufs and inference engine instances.
-class ModelRegistry {
-public:
+class ModelRegistry
+{
+  public:
     ModelRegistry() = default;
 
     /// @brief Register a loaded model.
@@ -52,7 +54,7 @@ public:
     /// @brief Get the number of registered models.
     size_t Count() const;
 
-private:
+  private:
     mutable std::mutex mutex_;
     std::unordered_map<std::string, ModelInfo> infos_;
     std::unordered_map<std::string, std::shared_ptr<InferenceEngine>> engines_;

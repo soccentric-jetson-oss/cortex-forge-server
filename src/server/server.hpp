@@ -7,16 +7,18 @@
 
 #pragma once
 
-#include <string>
-#include <memory>
 #include <grpcpp/server.h>
 #include <grpcpp/server_builder.h>
+#include <memory>
+#include <string>
 
-namespace cortexforge {
+namespace cortexforge
+{
 
 /// @brief Wraps a gRPC server with Cortex Forge service implementation.
-class Server {
-public:
+class Server
+{
+  public:
     /// @brief Construct a server bound to the given address.
     /// @param address Host:port string (e.g., "127.0.0.1:50051").
     explicit Server(const std::string& address);
@@ -32,7 +34,7 @@ public:
     /// @return true if the server is active.
     [[nodiscard]] bool IsRunning() const;
 
-private:
+  private:
     std::string address_;
     std::unique_ptr<grpc::Server> server_;
     std::unique_ptr<grpc::ServerCompletionQueue> cq_;

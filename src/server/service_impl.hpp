@@ -9,61 +9,54 @@
 
 #include <cortex_forge.grpc.pb.h>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <unordered_map>
-#include <mutex>
 
-namespace cortexforge {
+namespace cortexforge
+{
 
 /// @brief Implements the CortexForge gRPC service.
 ///
 /// Handles model loading/unloading, inference requests, and metrics
 /// collection. Thread-safe: uses internal mutex for model registry.
-class CortexForgeServiceImpl final : public CortexForge::Service {
-public:
+class CortexForgeServiceImpl final : public CortexForge::Service
+{
+  public:
     CortexForgeServiceImpl();
 
     // Model management
-    grpc::Status LoadModel(grpc::ServerContext* context,
-                           const LoadModelRequest* request,
+    grpc::Status LoadModel(grpc::ServerContext* context, const LoadModelRequest* request,
                            LoadModelResponse* response) override;
 
-    grpc::Status UnloadModel(grpc::ServerContext* context,
-                             const UnloadModelRequest* request,
+    grpc::Status UnloadModel(grpc::ServerContext* context, const UnloadModelRequest* request,
                              UnloadModelResponse* response) override;
 
-    grpc::Status ListModels(grpc::ServerContext* context,
-                            const ListModelsRequest* request,
+    grpc::Status ListModels(grpc::ServerContext* context, const ListModelsRequest* request,
                             ListModelsResponse* response) override;
 
-    grpc::Status GetModelInfo(grpc::ServerContext* context,
-                              const GetModelInfoRequest* request,
+    grpc::Status GetModelInfo(grpc::ServerContext* context, const GetModelInfoRequest* request,
                               GetModelInfoResponse* response) override;
 
     // Inference
-    grpc::Status Infer(grpc::ServerContext* context,
-                       const InferRequest* request,
+    grpc::Status Infer(grpc::ServerContext* context, const InferRequest* request,
                        InferResponse* response) override;
 
-    grpc::Status InferStream(grpc::ServerContext* context,
-                             const InferRequest* request,
+    grpc::Status InferStream(grpc::ServerContext* context, const InferRequest* request,
                              grpc::ServerWriter<InferResponse>* writer) override;
 
     // Monitoring
-    grpc::Status GetMetrics(grpc::ServerContext* context,
-                            const GetMetricsRequest* request,
+    grpc::Status GetMetrics(grpc::ServerContext* context, const GetMetricsRequest* request,
                             GetMetricsResponse* response) override;
 
-    grpc::Status WatchMetrics(grpc::ServerContext* context,
-                              const GetMetricsRequest* request,
+    grpc::Status WatchMetrics(grpc::ServerContext* context, const GetMetricsRequest* request,
                               grpc::ServerWriter<MetricsSnapshot>* writer) override;
 
     // Health
-    grpc::Status HealthCheck(grpc::ServerContext* context,
-                             const HealthCheckRequest* request,
+    grpc::Status HealthCheck(grpc::ServerContext* context, const HealthCheckRequest* request,
                              HealthCheckResponse* response) override;
 
-private:
+  private:
     std::mutex mutex_;
     std::unordered_map<std::string, ModelInfo> models_;
     uint64_t start_time_us_;

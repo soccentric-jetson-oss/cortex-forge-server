@@ -3,18 +3,20 @@
 //
 // test_model_registry.cpp - Tests for ModelRegistry
 
-#include <catch2/catch_test_macros.hpp>
-#include "engine/model_registry.hpp"
 #include "engine/inference_engine.hpp"
+#include "engine/model_registry.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 using namespace cortexforge;
 
-TEST_CASE("ModelRegistry starts empty", "[registry]") {
+TEST_CASE("ModelRegistry starts empty", "[registry]")
+{
     ModelRegistry registry;
     REQUIRE(registry.Count() == 0);
 }
 
-TEST_CASE("ModelRegistry register and retrieve", "[registry]") {
+TEST_CASE("ModelRegistry register and retrieve", "[registry]")
+{
     ModelRegistry registry;
 
     ModelInfo info;
@@ -33,7 +35,8 @@ TEST_CASE("ModelRegistry register and retrieve", "[registry]") {
     REQUIRE(retrieved.model_name() == "Test Model");
 }
 
-TEST_CASE("ModelRegistry unregister removes entry", "[registry]") {
+TEST_CASE("ModelRegistry unregister removes entry", "[registry]")
+{
     ModelRegistry registry;
 
     ModelInfo info;
@@ -48,7 +51,8 @@ TEST_CASE("ModelRegistry unregister removes entry", "[registry]") {
     REQUIRE(registry.Count() == 0);
 }
 
-TEST_CASE("ModelRegistry get engine returns correct instance", "[registry]") {
+TEST_CASE("ModelRegistry get engine returns correct instance", "[registry]")
+{
     ModelRegistry registry;
 
     ModelInfo info;
@@ -64,10 +68,12 @@ TEST_CASE("ModelRegistry get engine returns correct instance", "[registry]") {
     REQUIRE(retrieved->IsLoaded());
 }
 
-TEST_CASE("ModelRegistry list all returns all entries", "[registry]") {
+TEST_CASE("ModelRegistry list all returns all entries", "[registry]")
+{
     ModelRegistry registry;
 
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 5; ++i)
+    {
         ModelInfo info;
         info.set_model_id("model-" + std::to_string(i));
         registry.Register(info, std::make_shared<StubInferenceEngine>());

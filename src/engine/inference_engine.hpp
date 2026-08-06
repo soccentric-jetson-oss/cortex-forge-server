@@ -7,18 +7,20 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-#include <cstdint>
-#include <thread>
 #include <chrono>
-#include <cstdlib>
 #include <cortex_forge.pb.h>
+#include <cstdint>
+#include <cstdlib>
+#include <string>
+#include <thread>
+#include <vector>
 
-namespace cortexforge {
+namespace cortexforge
+{
 
 /// @brief Result of a single inference execution.
-struct InferenceResult {
+struct InferenceResult
+{
     bool success{false};
     std::vector<uint8_t> output_data;
     uint64_t latency_us{0};
@@ -29,8 +31,9 @@ struct InferenceResult {
 ///
 /// Concrete implementations support TensorRT engine plans, ONNX Runtime,
 /// or custom backends. Each engine manages a single loaded model.
-class InferenceEngine {
-public:
+class InferenceEngine
+{
+  public:
     virtual ~InferenceEngine() = default;
 
     /// @brief Load a model from file.
@@ -60,22 +63,26 @@ public:
 ///
 /// Simulates model loading and inference with configurable latency.
 /// In production, this would be replaced with TensorRT or ONNX Runtime.
-class StubInferenceEngine : public InferenceEngine {
-public:
+class StubInferenceEngine : public InferenceEngine
+{
+  public:
     StubInferenceEngine() = default;
 
-    bool LoadModel(const std::string& /*model_path*/) override {
+    bool LoadModel(const std::string& /*model_path*/) override
+    {
         loaded_ = true;
         input_size_ = 1024 * 1024;
         output_size_ = 1024 * 1024;
         return true;
     }
 
-    void UnloadModel() override {
+    void UnloadModel() override
+    {
         loaded_ = false;
     }
 
-    InferenceResult Infer(const std::vector<uint8_t>& /*input_data*/) override {
+    InferenceResult Infer(const std::vector<uint8_t>& /*input_data*/) override
+    {
         auto latency_ms = 1 + (rand() % 5);
         std::this_thread::sleep_for(std::chrono::milliseconds(latency_ms));
 
@@ -86,11 +93,20 @@ public:
         return result;
     }
 
-    size_t GetInputSize() const override { return input_size_; }
-    size_t GetOutputSize() const override { return output_size_; }
-    bool IsLoaded() const override { return loaded_; }
+    size_t GetInputSize() const override
+    {
+        return input_size_;
+    }
+    size_t GetOutputSize() const override
+    {
+        return output_size_;
+    }
+    bool IsLoaded() const override
+    {
+        return loaded_;
+    }
 
-private:
+  private:
     bool loaded_{false};
     size_t input_size_{0};
     size_t output_size_{0};
@@ -103,15 +119,17 @@ private:
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
-class OpenCVOptimizedEngine : public InferenceEngine {
-public:
+class OpenCVOptimizedEngine : public InferenceEngine
+{
+  public:
     bool LoadModel(const std::string& path) override;
     void UnloadModel() override;
     InferenceResult Infer(const std::vector<uint8_t>& data) override;
     size_t GetInputSize() const override;
     size_t GetOutputSize() const override;
     bool IsLoaded() const override;
-private:
+
+  private:
     cv::Mat preprocess(const cv::Mat& input);
     bool loaded_{false};
 };

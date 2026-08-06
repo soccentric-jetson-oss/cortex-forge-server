@@ -6,13 +6,16 @@
 #include "accelerator/accelerator_manager.hpp"
 #include <chrono>
 
-namespace cortexforge {
+namespace cortexforge
+{
 
 AcceleratorManager::AcceleratorManager()
-    : rng_(static_cast<unsigned int>(
-          std::chrono::steady_clock::now().time_since_epoch().count())) {}
+    : rng_(static_cast<unsigned int>(std::chrono::steady_clock::now().time_since_epoch().count()))
+{
+}
 
-AcceleratorMetrics AcceleratorManager::GetMetrics() const {
+AcceleratorMetrics AcceleratorManager::GetMetrics() const
+{
     AcceleratorMetrics metrics;
     // Simulated metrics (in production, read from driver via sysfs/ioctl)
     metrics.gpu_util_percent = 45.0 + static_cast<double>(rng_() % 3000) / 100.0;
@@ -24,7 +27,8 @@ AcceleratorMetrics AcceleratorManager::GetMetrics() const {
     return metrics;
 }
 
-AcceleratorType AcceleratorManager::SelectAccelerator(AcceleratorType preferred) const {
+AcceleratorType AcceleratorManager::SelectAccelerator(AcceleratorType preferred) const
+{
     if (preferred != AcceleratorType::AUTO)
         return preferred;
 
@@ -33,7 +37,8 @@ AcceleratorType AcceleratorManager::SelectAccelerator(AcceleratorType preferred)
     return AcceleratorType::DLA0;
 }
 
-bool AcceleratorManager::IsAcceleratorAvailable(AcceleratorType /*type*/) const {
+bool AcceleratorManager::IsAcceleratorAvailable(AcceleratorType /*type*/) const
+{
     // All accelerators are available on Jetson AGX Orin
     return true;
 }
